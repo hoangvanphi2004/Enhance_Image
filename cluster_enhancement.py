@@ -117,5 +117,3 @@ def test():
     plt.title('hist_original')
 
     plt.show()
-
-test()
