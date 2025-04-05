@@ -61,7 +61,7 @@ def variance_neigborhood(image, i, j, kernel_size):
     perception_view = image[i-padding:i+padding+1, j-padding:j+padding+1]
     return np.var(perception_view)
 
-def cluster_enhancement(image, kernel_size=3, alpha=0.5, k=5):
+def cluster_enhancement(image, kernel_size=3, alpha=0.5, k=5, p_value=0.5):
     I = np.array(image, dtype=np.float32)
     # Step 1
     I_i = I.copy()
@@ -84,8 +84,8 @@ def cluster_enhancement(image, kernel_size=3, alpha=0.5, k=5):
     # Step 6
     result = I_o.copy()
 
-    first_ten = np.percentile(I_o, 0.5)
-    last_ten = np.percentile(I_o, 99.5)
+    first_ten = np.percentile(I_o, p_value)
+    last_ten = np.percentile(I_o, 100 - p_value)
     result[result < first_ten] = first_ten
     result[result > last_ten] = last_ten    
 
@@ -94,10 +94,10 @@ def cluster_enhancement(image, kernel_size=3, alpha=0.5, k=5):
     return result
 
 def test():
-    image = Image.open('image/aa.webp').convert('L')
-    image = image.resize((256, 256))
+    image = Image.open('test_dataset/images/X51005442344_3.jpg').convert('L')
+    #image = image.resize((256, 256))
     image = np.array(image)
-    output = cluster_enhancement(image)
+    output = cluster_enhancement(image, kernel_size=15, alpha=0.5, k=5, p_value=5)
 
     plt.figure(1)
     plt.imshow(image, cmap='gray')
@@ -117,3 +117,5 @@ def test():
     plt.title('hist_original')
 
     plt.show()
+
+test()
